@@ -8,11 +8,10 @@ const resend = new Resend(process.env.API_KEY);
 
 // Register user
 export async function registerUser(req, res) {
-  // Extract email and password from request body
-  const { email, password } = req.body;
+  const { email, password } = req.body; // Extract email and password from request body
 
-  // Check if email or password is missing
   if (!email || !password) {
+    // Check if email or password is missing
     return res
       .status(400)
       .json({ message: "Email and password are required." });
@@ -62,6 +61,7 @@ export async function registerUser(req, res) {
     });
 
     if (emailResponse.error) {
+      console.error(emailResponse);
       return res
         .status(500)
         .json({ error: "Failed to send verification email" });
