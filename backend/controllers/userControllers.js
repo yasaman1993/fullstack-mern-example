@@ -33,6 +33,7 @@ export async function registerUser(req, res) {
       password: hashedPassword,
       verificationToken: crypto.randomBytes(32).toString("hex"),
       tokenExpiresAt: Date.now() + 1000 * 60 * 60 * 24, // Token expires in 24 hours
+      verified: true,
     });
 
     // Send the verification email using Resend
@@ -61,7 +62,6 @@ export async function registerUser(req, res) {
     });
 
     if (emailResponse.error) {
-      console.error(emailResponse);
       return res
         .status(500)
         .json({ error: "Failed to send verification email" });
@@ -100,15 +100,19 @@ export async function loginUser(req, res) {
       return res.status(401).json({ error: "Invalid login" });
     }
 
-    // TODO Erstelle JWT Token
+    //Step 6: create JWT Token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY);
 
-    // TODO Antworte mit token und paar Userdaten
-    res
-      .status(200)
-      .json({ message: "Login successful!", user: user, token: token });
+    // Step 7: set token as cookie with name jwt
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+    });
+    res.status(200).json({ message: "Login successful!", user });
   } catch (error) {
-    console.error("Error during registration:", error);
+    console.error("Error during login:", error);
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 }
@@ -143,4 +147,29 @@ export const getReports = (req, res) => {
     { id: 2, title: "Aktivitäts Report" },
   ];
   res.json(reports);
+};
+
+// logout
+export const logoutUser = (req, res) => {
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
+  res.status(200).json({ message: "Logout successfully" });
+};
+
+//check if user is still logged in
+export const checkedLogin = (req, res) => {
+  const token = req.cookies.jwt;
+  if (!token) {
+    return res.status(401).send();
+  }
+
+  try {
+    jwt.verify(token, process.env.JWT_SECRET_KEY);
+    res.send("user logged in");
+  } catch (error) {
+    return res.status(401).send();
+  }
 };

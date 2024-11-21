@@ -1,19 +1,18 @@
 import jwt from "jsonwebtoken";
+import User from "./models/User.js";
 
 // Authorization middleware
-export const authMiddleware = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).send();
+export const authMiddleware = async (req, res, next) => {
+  const token = req.cookies.jwt;
+  if (!token) {
+    return res.status(401).send({ error: "Unauthorized: No token provided" });
   }
 
-  const token = authHeader.split(" ")[1]; // Extract token after 'Bearer'
-  if (!token) {
-    return res.status(401).send();
-  }
+
 
   try {
-    const user = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const user = await User.findOne({ _id: decoded.userId });
     req.user = user;  // Attach decoded user info to the request
     next();
   } catch (err) {
