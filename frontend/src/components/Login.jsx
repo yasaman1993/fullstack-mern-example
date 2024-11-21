@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,8 +10,9 @@ export default function Login() {
   function submitHandler(e) {
     e.preventDefault();
 
-    fetch("http://localhost:3000/login", {
+    fetch("https://fullstack-mern-example-79tt.onrender.com/login", {
       method: "POST",
+      credentials: "include", // Sendet Cookies (z. B. für JWT)
       headers: {
         "Content-Type": "application/json",
       },
@@ -21,19 +22,17 @@ export default function Login() {
       }),
     })
       .then((res) => {
-        if (!res.ok) {
-          throw new Error("Login failed.");
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error("Login failed");
         }
-
-        return res.json();
       })
       .then((data) => {
-        if (data.token) {
-          login(data.token);
-          setEmail("");
-          setPassword("");
-          setMessage("Login successful!");
-        }
+        setEmail("");
+        setPassword("");
+        setMessage("Login successful!");
+        login();
       })
       .catch((error) =>
         setMessage("An error occurred. Please try again.", error)
@@ -43,6 +42,7 @@ export default function Login() {
   return (
     <>
       <h1>login to your account</h1>
+      <p>{message}</p>
       <form onSubmit={submitHandler}>
         <div>
           <label htmlFor="email">Email:</label>
@@ -51,6 +51,7 @@ export default function Login() {
             id="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
+            required
           />
         </div>
         <div>
@@ -60,17 +61,12 @@ export default function Login() {
             id="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
+            required
           />
         </div>
 
         <button type="submit">login</button>
       </form>
-      {message && <p>{message}</p>}
-      <Link
-        to="/"
-        style={{ display: "block", marginTop: "16px", color: "blue" }}>
-        Go to back
-      </Link>
     </>
   );
 }

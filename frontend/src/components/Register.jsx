@@ -4,42 +4,35 @@ import { Link } from "react-router-dom";
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
   const [message, setMessage] = useState("");
 
-  
-  async function submitHandler(e) {
+   function submitHandler(e) {
     e.preventDefault();
 
-    try {
-      const response = await fetch("http://localhost:3000/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          rememberMe,
-        }),
-      });
+    fetch("https://fullstack-mern-example-79tt.onrender.com/register", {
+      method: "POST", // HTTP-Methode
+      headers: {
+        "Content-Type": "application/json", // Header that specifies the content type
+      },
+      body: JSON.stringify({
+        password: password,
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("registration failed");
+        }
+        setMessage("Please check your inbox and confirm your email.");
+        setEmail("");
+        setPassword("");
+      })
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed");
-      }
-
-      
-      setMessage("Please check your inbox and confirm your email.");
-    } catch (error) {
-      // Detailed error message if available
-      setMessage(error.message || "Please check your data");
-    }
+      .catch((error) => setMessage("Please check your data", error));
   }
 
   return (
     <>
-      <h2>Sign in to your account</h2>
+      <h2>Create an account</h2>
       <form onSubmit={submitHandler}>
         <div>
           <label htmlFor="email">Email:</label>
@@ -59,21 +52,10 @@ export default function Register() {
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>
-        <div>
-          <label htmlFor="rememberMe">
-            <input
-              type="checkbox"
-              id="rememberMe"
-              checked={rememberMe}
-              onChange={(event) => setRememberMe(event.target.checked)}
-            />
-            Remember me on this device
-          </label>
-        </div>
 
-        <button type="submit">Sign in</button>
+        <button type="submit">Sign up</button>
       </form>
-      {message && <p>{message}</p>}
+      <p>{message}</p>
       <Link
         to="/login"
         style={{ display: "block", marginTop: "16px", color: "blue" }}>
