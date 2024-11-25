@@ -12,7 +12,7 @@ const port = process.env.PORT;
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ['http://localhost:5173', 'https://fullstack-mern-example-frontend-x052.onrender.com'],
     credentials: true,
   })
 );
