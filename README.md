@@ -13,4 +13,4 @@ This project is a Fullstack MERN (MongoDB, Express, React, Node.js) application 
 
 **Secure Authentication:** Passwords are hashed.
 
-### [Visit the App here](https://fullstack-mern-example-frontend-x052.onrender.com)
+### [Visit it here](https://fullstack-mern-example-frontend-x052.onrender.com)
