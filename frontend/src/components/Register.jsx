@@ -4,6 +4,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -15,18 +16,26 @@ export default function Register() {
     }
 
     try {
-      const response = await fetch("https://fullstack-mern-example-79tt.onrender.com/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Registration failed");
-      }
+      const response = await fetch(
+        "https://fullstack-mern-example-79tt.onrender.com/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
-      setMessage(data.message);
+      if (!response.ok) {
+        setMessage(data.message || "Registration failed.");
+        return;
+      }
+
+      // Indicate email verification is required
+      setIsVerifying(true);
+      setMessage(
+        "Registration successful! Please check your email to verify your account."
+      );
     } catch (error) {
       console.error("Registration failed:", error);
       setMessage("Registration failed.");
