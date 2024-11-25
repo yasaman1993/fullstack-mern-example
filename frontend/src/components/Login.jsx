@@ -26,7 +26,9 @@ export default function Login() {
       setMessage(data.message);
     } catch (error) {
       console.error("Login failed:", error);
-      setMessage("Login failed.");
+      setMessage(
+        "Login failed. Please check your email to verify your account if you haven't done so already."
+      );
     }
   }
 
