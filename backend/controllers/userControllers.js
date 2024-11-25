@@ -47,7 +47,7 @@ export async function registerUser(req, res) {
             <h1>Welcome to d01b</h1>
             <p>Wir freuen uns, dich in unserem Team zu haben.</p>
             <p>Bitte bestätige deine E-Mail-Adresse, indem du auf den folgenden Link klickst:</p>
-            <a href="http://localhost:3000/verify/${user.verificationToken}" style="color: blue;">E-Mail bestätigen</a>
+            <a href="https://fullstack-mern-example-79tt.onrender.com/verify/${user.verificationToken}" style="color: blue;">E-Mail bestätigen</a>
             <p>Nächste Schritte:</p>
             <ol>
               <li>Explore our features</li>
