@@ -33,8 +33,14 @@ export async function registerUser(req, res) {
       password: hashedPassword,
       verificationToken: crypto.randomBytes(32).toString("hex"),
       tokenExpiresAt: Date.now() + 1000 * 60 * 60 * 24, // Token expires in 24 hours
-      verified: true,
+      verified: false,
     });
+
+    if (!user.verified) {
+      return res
+        .status(403)
+        .json({ error: "Account not verified. Please check your email to verify your account." });
+    }
 
     // Send the verification email using Resend
     const emailResponse = await resend.emails.send({
