@@ -36,11 +36,7 @@ export async function registerUser(req, res) {
       verified: false,
     });
 
-    if (!user.verified) {
-      return res
-        .status(403)
-        .json({ error: "Account not verified. Please check your email to verify your account." });
-    }
+  
 
     // Send the verification email using Resend
     const emailResponse = await resend.emails.send({
