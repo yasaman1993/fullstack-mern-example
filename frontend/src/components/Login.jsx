@@ -15,12 +15,9 @@ export default function Login() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
           credentials: "include",
-         
         }
       );
 
-      console.log("Response status:", response.status);
-      console.log("Response body:", await response.text());
       if (!response.ok) {
         throw new Error("Login failed");
       }
