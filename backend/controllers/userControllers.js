@@ -41,7 +41,7 @@ export async function registerUser(req, res) {
     // Send the verification email using Resend
     const emailResponse = await resend.emails.send({
       from: "onboarding@resend.dev",
-      to: "yasaman.nikpay@dci-student.org",
+      to: email,
       subject: "Welcome to d01b",
       html: `
         <html>
